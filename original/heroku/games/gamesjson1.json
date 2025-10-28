@@ -1,0 +1,11 @@
+{
+    "games": [{
+        "id": 123456,
+        "ww": "123",
+        "keep": [0, 0, 1, 2, 2],
+        "aantalkeep": 2,
+        "change": [1, 2, 2, 3],
+        "aantalchange": 3,
+        "lasttime": 1619108667736
+         }]
+}

@@ -1,0 +1,1039 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-P1BDF47KK2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-P1BDF47KK2');
+</script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Law of large numbers</title>
+    <link rel="stylesheet" href="../files/jquery-ui.min.css" type="text/css" />
+    <link rel="stylesheet" href="styles.css" type="text/css" />
+    <script src="vars.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!--<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>-->
+    <script src='https://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js'></script>
+    <!--<script src="../files/jquery-1.7.min.js"></script>
+    <script src="../files/knockout-3.4.0.js"></script>-->
+    <script src="../files/jquery-ui.min.js"></script>
+    <script src="../files/jquery.event.drag-2.2.js"></script>
+    <script src="../files/jquery.ui.touch-punch.min.js"></script>
+    <script src="../files/assen.js"></script>
+    <script src="../files/jstat.js"></script>
+    <script src="../files/logo.js"></script>
+    <script charset="UTF-8" src="model.js"></script>
+    <script charset="UTF-8" src="vertaal.js"></script>
+    <script src="grafiek.js"></script>
+    <script src="begin.js"></script>
+    <script src="dialog.js"></script>
+    <link rel="shortcut icon" type="image/png" href="../files/favicoVU.png">
+ 
+</head>
+
+<body>
+    <div class="contextMenu" id="menucontainer" style="width:170px;  position:absolute;right:0; top:0px;bottom:0; overflow:auto;z-index:100" data-bind="visible:model.toonMenu">
+        <div id="menuuit" class="cross" style="position:absolute;top:0;right:0" data-bind="click:menuuit">
+
+        </div>
+
+        <ul style="margin-top:30px;" id="menu">
+
+
+            <li><span class="kies_taal"></span>
+                <br>
+                <select style="width:100px" ; id="talen" data-bind="   
+							value: model.selectedtaal,
+							options:        model.talen,
+							optionsText:    'naam', 
+							optionsValue:   'id'       
+						"></select>
+            </li>
+            <li id="9li"><span id="opnieuw_laden"></span></li>
+            <li id="2li"><span id="alg_help"></span></li>
+
+
+            <li id="7li"> <span id="main_menu"></span>
+
+            </li>
+
+        </ul>
+
+    </div>
+    <div data-bind='visible:(nopage()==0)'>
+        <div style="width:100%; height:100px;margin-bottom:30px">
+            <canvas id="logocanvas" height="100" ; width="675"></canvas>
+        </div>
+
+        <div style='text-align:center;'>
+            <h2> <br><span class='law_large'></span> &nbsp; <button type="button" onclick="geefhelp()" style="width:30px;font-weight:bolder;border-radius:50%;color:blue" title="Help" id="helpbutton"> ?
+                </button></h2>
+
+
+            <p style="margin-top:20px;margin-bottom:30px"><span id="geef_code"></span>
+                <input type="text" maxlength="6" placeholder="123456" data-bind="value:numcode">
+            </p>
+
+            <button input type="button" id="start_monty" style=" width:200px; height:40px; font-weight:bold; color:blue; font-size:16px"><span class="monty_hall"></span>
+            </button>
+            <br>
+            <p>
+                <br><span class="drie_deuren"></span>
+            </p>
+            <br>
+            <br>
+            <button input type="button" id="start_lootjes" style=" width:200px; height:40px; font-weight:bold; color:blue; font-size:16px"><span class="lootjes_trekken"></span>
+            </button>
+            <br>
+            <p>
+                <br><span class="zichzelf_trekken"></span>
+            </p>
+            <br>
+            <br>
+            <button input type="button" id="eerstepagina" value="openen" style=" width:200px; height:40px; font-weight:bold; color:blue; font-size:16px"><span id='munten'></span>
+            </button>
+            <br>
+            <p>
+                <br><span class='oneerlijke_munt'></span>
+            </p>
+            <div style="display:flex;justify-content:space-around;align-items:center ">
+                <div style="width:200px;text-align:left;  ">
+                    <br>
+                    <p><span class="kies_taal"></span>
+                        <select style="width:100px" ;class="talen" data-bind="   
+							value: model.selectedtaal,
+							options:        model.talen,
+							optionsText:    'naam', 
+							optionsValue:   'id'       
+						"></select>
+                    </p>
+
+
+                    <p>Piet van Blokland</p>
+                    <p>&copy;vusoft amsterdam 2013</p>
+
+                </div>
+                <div>
+                    <button type="button" id="openinternet" style=" width:80px; height:30px; font-weight:bold; color:blue;font-size:16px;margin-bottom:10px;">Internet</button><br>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="screen_container" data-bind='visible:(nopage()==1)'>
+        <div style="position:absolute; top:0;right:0; float:right;z-index:100" data-bind="visible:(!model.toonMenu()&&(model.nopage()==1)">
+            <button type="button" id="menubutton" style="width:40px;margin-right:5px;margin-top:5px;vertical-align:center;font-weight:bolder;" data-bind="click:zetmenu"> &#9776;
+            </button>
+            <input type="image" id="ontopbutton" src="../files/images/ontop.bmp" data-bind="visible:model.ontop,click:zetontop">
+        </div>
+
+        <div style="position:absolute; top:0;left:0;right:0;height:100px;background:#f2f2f2;">
+
+            <!--topgrafiek-->
+
+            <fieldset>
+                <legend><span style="font-weight:bold" class="law_large"> </span>
+                </legend>
+                <table>
+                    <tr>
+                        <td style="text-align:center">
+
+                            <span class="simuleren" style="font-size:20px"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:16px">
+                            <span data-bind="visible:(model.simulate()==0)" class="oneerlijke_munt"></span>
+                            <span class="monty_hall" data-bind="visible:(model.simulate()==1)"></span>
+                            <span class="lootjes_trekken" data-bind="visible:(model.simulate()==2)"></span>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+            <fieldset>
+                <legend><span style="font-weight:bold" id="alg_settings"></span>
+                </legend>
+                <table>
+                   
+                    <tr>
+                        <td data-bind=" visible:(model.simulate()==1)">
+                            <select style="font-weight:bold" data-bind="disable:actief,                              
+                                   value: model.selectedkeuze,
+							options:        model.keuzes,
+							optionsText:    'Name', 
+							optionsValue:   'Id',   
+							disable:        actief ">
+                            </select>
+                        </td>
+                        <td data-bind="visible:(model.simulate()==0)">
+                            <span id="kans_kop"></span>
+
+                            <input type="number" step="0.1" style="width: 50px" data-bind="value:kans, disable:actief">
+                        </td>
+                        <td data-bind="visible:(model.simulate()==2)">
+                            <span class="grootte_groep"></span>
+                            <input type="number" style="width: 50px" data-bind="value:size_group,disable:actief">
+                        </td>
+                    </tr>
+                     <tr>
+                        <td>
+                            <span id='sampling_omvang'></span>
+                            <input type="number" style="width: 70px" class="schoon" data-bind="value:model.sampleSize,	disable:actief " min="1" />
+                        </td>
+                    </tr>
+
+
+                </table>
+
+            </fieldset>
+            <fieldset>
+                <legend><span style="font-weight:bold" id="trechter"></span>
+                </legend>
+
+
+                <table>
+
+                    <tr>
+                        <td>
+                            <label>
+                                <input type="radio" id="een" name='show' value='0' data-bind="checked: showTrechter" /> <span id="alg_geen"></span>
+                            </label>
+                        </td>
+
+                        <td>
+                            <label>
+                                <input type="radio" id="three" name='show' value='1' data-bind="checked: showTrechter" />90 %</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>
+                                <input type="radio" id="four" name='show' value='2' data-bind="checked: showTrechter" />95 %</label>
+                        </td>
+
+                        <td>
+                            <label>
+                                <input type="radio" id="twee" name='show' value='3' data-bind="checked: showTrechter" />99 %</label>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+            <fieldset>
+                <legend><span style="font-weight:bold" id="alg_beeld"></span>
+                </legend>
+
+
+                <table>
+                    <tr>
+                        <td>
+                            <label style="margin-right:20px">
+                                <input type="checkbox" data-bind="checked: model.showmemory" /> <span id="alg_geheugen"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+
+                            <label style="margin-right:20px">
+                                <input type="checkbox" data-bind="checked: model.showgrid" /> <span id="grid"></span>
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+
+            <div data-bind="visible:(model.simulate()==1)" style="position:absolute;left:700px;width:200px;top:0;bottom:0">
+                <div style="position: absolute;top:0;height:50%;
+                                                           ;right:0;width:25%">
+                    <img data-bind="attr:{src:imageSimul0()}" width='100%' height='100%'>
+                </div>
+                <div style="position: absolute;top:0;height:50%;
+                                                           ;right:35%;width:25%">
+                    <img data-bind="attr:{src:imageSimul1()}" width='100%' height='100%'>
+                </div>
+                <div style="position: absolute;top:0;height:50%;
+                                                           ;right:70%;width:25%">
+                    <img data-bind="attr:{src:imageSimul2()}" width='100%' height='100%'>
+                </div>
+                <div style="position:absolute ; left:0:right:0;top:50%;bottom:0">
+                    <h3> <span id="tekstsim"></span></h3>
+                </div>
+            </div>
+
+            <fieldset data-bind="visible:(model.simulate()==2)" style="min-height:60px">
+                <legend><span style="font-weight:bold" class="lootjes_trekken"></span>
+                </legend>
+
+                <div id="showtabel"></div>
+            </fieldset>
+
+        </div>
+        <div style="position:absolute; top:100px;left:0;right:0;bottom:0">
+            <!--links en  grafiek-->
+            <div style="position:absolute; top:0;left:0;width:200px;bottom:0;padding-left:10px;background:#f2f2f2;">
+                <!--links-->
+                <div style="position:absolute;top:0;left:10px;right:0;height:70px;background:#f2f2f2;">
+                    <table border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td>
+                                <button type="button" class="speedbutton tempo0" style="font-size:13px;padding:0;" data-bind="style: {color:$root.geefKleur(0)}">&#9658;</button>
+                            </td>
+                            <td>
+                                <button type="button" class="speedbutton tempo1" style="width:35px;font-size:13px;padding:0;" data-bind="style:{color:$root.geefKleur(1)}">&#9658;&#9658;</button>
+                            </td>
+                            <td>
+                                <button type="button" class="speedbutton tempo2" STYLE="width:40px;font-size:13px;padding:0;" data-bind="style:{color:$root.geefKleur(2)}">&#9658;&#9658;&#9658;</button>
+                            </td>
+                            <td>
+                                <button type="button" class="speedbutton stop" STYLE="letter-spacing:0;font-size:20px" data-bind="style: {color: actief()?'red':'silver'}  , enable:actief() , click:doStop">&#9679;</button>
+                            </td>
+                        </tr>
+                    </table>
+                    <p style="margin-bottom:8px; margin-top:6px;">
+                        <span class='sampling_steekproef'></span>&nbsp; <span class="attention" data-bind="text:uitvoer"></span>
+                    </p>
+                </div>
+
+                <div style="position:absolute;bottom:160px;left:0;right:0;top:60px;background:white">
+                    <canvas id="histogram" width="500" height="500"></canvas>
+                </div>
+                <div style="position:absolute;bottom:0;left:10px;right:0;height:160px">
+                    <table>
+                        <tr>
+                            <td><span class='alg_aantal'></span>
+                            </td>
+                            <td style="text-align:center"><span id="aantal"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id='alg_gemiddelde'></span>
+                            </td>
+                            <td style="text-align:right"><span id="mean"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="alg_sd"></span>
+                            </td>
+                            <td style="text-align:right"><span id="sd"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="alg_minimum"></span>
+                            </td>
+                            <td style="text-align:right"><span id="minimum"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="alg_q1"></span>
+                            </td>
+                            <td style="text-align:right"><span id="q1"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="alg_median"></span>
+                            </td>
+                            <td style="text-align:right"><span id="q2"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="alg_q3"></span>
+                            </td>
+                            <td style="text-align:right"><span id="q3"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span id="alg_maximum"></span>
+                            </td>
+                            <td style="text-align:right"><span id="maximum"></span>
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+
+
+            </div>
+            <div style="position:absolute; top:0;left:200px;right:0;bottom:0">
+                <!--grafiek-->
+                <canvas id="paintbox" width="500" height="500"></canvas>
+            </div>
+        </div>
+    </div>
+    <div data-bind="visible:(nopage()==2)" class="koppen" style="background-color:#D3D3D3;   
+		position: absolute;
+		width: 100%;
+		min-height: 100%;
+		margin:0;
+	">
+        <div class="row row1">
+            <!-- drie deuren probleem-->
+            <h2 class="titel_row1"><span class="drie_deuren"></span>(<span data-bind="{text:numcode,color:geefColor}"></span>)
+                <label style="float:right;font-size:14px;margin-right:20px;">
+                    <input type="checkbox" data-bind="checked: $root.cheat" /> <span id="cheat"></span>
+                </label></h2>
+        </div>
+
+        <div class="row row2">
+            <div class="deurContainer">
+
+                <div class="deur" id="deur1">
+
+                    <p class="titelDeur"><span id="foto0"></span>
+                    </p>
+                    <img class="picture" data-bind="attr:{src:imagePath0}" id="plaat0">
+                    <div data-bind="visible:(model.cheat()||(niet_gekozen()==0))" class="cheat">
+                        <img id="cheat3" class="cheatImage" data-bind="attr:{src:imageCheat0()}">
+                    </div>
+                </div>
+                <div class="deur" id="deur2" style="margin-left:1%;margin-right:1%">
+                    <p class="titelDeur"><span id="foto1"></span>
+                    </p>
+                    <img class="picture" data-bind="attr:{src:imagePath1}" id="plaat1">
+                    <div data-bind="visible:(model.cheat()||(niet_gekozen()==1))" class="cheat">
+                        <img id="cheat2" class="cheatImage" data-bind="attr:{src:imageCheat1}">
+                    </div>
+                </div>
+
+                <div class="deur" id="deur3">
+                    <p class="titelDeur"><span id="foto2"></span>
+                    </p>
+                    <img class="picture" data-bind="attr:{src:imagePath2}" id="plaat2">
+                    <div data-bind="visible:(model.cheat()||(niet_gekozen()==2))" class="cheat">
+                        <img id="cheat3" class="cheatImage" data-bind="attr:{src:imageCheat2}">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row row3">
+            <h2><span id="melding"></span> <button data-bind="click:startdeur,visible:(stapdeur()==2)"><b><span id="volgend_spel" style="font-size:16px;"></span></b></button> </h2>
+        </div>
+
+        <div class="row row4">
+            <div class="col" style="right:53%;width:40%;max-width:300px;">
+                <fieldset class="results" style="background:kleurkeep">
+                    <legend><span style="font-weight:bold" class="resultaten"> </span>
+                    </legend>
+                    <table class="resultTabel">
+                        <caption><span id="keep_choice"></span> <span id="keep_choice_keer"></span></caption>
+                        <tr>
+                            <td><span class="auto"></span>
+                            </td>
+                            <td><span id="keep_wins_text"></span>
+                            </td>
+                            <td><span id="keep_winsp"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="geit"></span>
+                            </td>
+                            <td><span id="keep_goat_text"></span>
+                            </td>
+                            <td><span id="keep_goatp"></span>
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+            </div>
+            <div class="col" style="left:53%;width:40%;max-width:300px;">
+                <fieldset class="results">
+                    <legend><span style="font-weight:bold" class="resultaten"> </span>
+                    </legend>
+
+                    <table class="resultTabel">
+                        <caption><span id="change_choice"></span> <span id="change_choice_keer"></span></caption>
+                        <tr>
+                            <td><span class="auto"></span>
+                            </td>
+                            <td><span id="change_wins_text"></span>
+                            </td>
+                            <td><span id="change_winsp"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="geit"></span>
+                            </td>
+                            <td><span id="change_goat_text"></span>
+                            </td>
+                            <td><span id="change_goatp"></span>
+                            </td>
+                        </tr>
+                    </table>
+
+                </fieldset>
+            </div>
+        </div>
+        <div class="row row5" style="text-align:center;">
+            <button class="statbutton hoog" id="info" type="button"><span id="alg_info"></span></button>
+
+            <button class="statbutton hoog" id="toongrafiek" type="button"><span id="alg_grafiek"></span></button>
+            <br>
+            <button id="start_simuleren" class="statbutton hoog"><span class="simuleer_veel statbutton"></span>
+            </button>
+            <button class="statbutton hoog" onclick="starten()"><span class="view_dataset"></span></button>
+
+
+
+            <br>
+
+            <button id="sluiten" class="statbutton hoog" style="background-color:aqua"><span class="alg_sluit"></span></button>
+        </div>
+    </div>
+
+    <div class="screen_container" data-bind="visible:(nopage()==3);" style="overflow:hidden">
+        <button class="statbutton" id="sluitengraf" style="background:aqua;color:black;position:absolute;bottom:3px;right:3px;z-index:100;border-radius:10px">
+            <span id="close_graph"></span>
+        </button>
+        <heading>
+
+            <!-- drie deuren probleem-->
+
+            <div style="display:flex;align-items: center;justify-content:center;background-color:#D3D3D3">
+                <div style="background:blue" class="mpage3"><span id="keep_text"></span></div>
+
+                <div style="background:lime" class="mpage3"><span id="change_text"></span></div>
+            </div>
+
+
+            <!--	<table border="0" cellspacing="0" cellpadding="0" style="color:white; margin-left:30px;">
+				<tr>
+
+					
+					<td style="background:gray;display:none" class="mpage3"><label><input type="checkbox"  data-bind="checked:toonSimuleren"><span class="simuleren" ></span></label></td>
+					<td class="page3">
+						<button type="button" class="speedbutton tempo0" style="font-size:13px;padding:0;" data-bind="style: {color:$root.geefKleur(0)}">&#9658;</button>
+					</td>
+					<td class="page3">
+						<button type="button" class="speedbutton tempo1" style="width:35px;font-size:13px;padding:0;" data-bind="style:{color:$root.geefKleur(1)}">&#9658;&#9658;</button>
+					</td>
+					<td class="page3">
+						<button type="button" class="speedbutton tempo2" STYLE="width:40px;font-size:13px;padding:0;" data-bind="style:{color:$root.geefKleur(2)}">&#9658;&#9658;&#9658;</button>
+					</td>
+					<td class="page3">
+						<button type="button" class="speedbutton stop" STYLE="letter-spacing:0;font-size:20px" data-bind="style: {color: actief()?'red':'silver'}  , enable:actief() , click:doStop">&#9679;</button>
+					</td>
+
+
+					<td class="page3"><span class="alg_aantal"></span>
+						<input type="number" data-bind="value:steekproefOmvang">
+					</td>
+				</tr>
+			</table>-->
+        </heading>
+
+        <div class="row" style="top:80px;bottom:0">
+            <canvas id="paintbox3" width="500" height="500"></canvas>
+        </div>
+    </div>
+
+
+
+    <div id="dialog-ontop" style="overflow:hidden">
+
+        <iframe id="myIframe" style="border: 0px; " src="" width="100%" height="100%"></iframe>
+    </div>
+
+    <script>
+        function respondCanvas3() {
+            var c3 = $('#paintbox3');
+            var ct3 = c3.get(0).getContext('2d');
+            var container3 = $(c3).parent();
+
+            c3.attr('width', $(container3).width() - 2); //max width
+            c3.attr('height', $(container3).height()); //max height
+
+            //Redraw & reposition content
+            //		draw();
+            var x = c3.width();
+            var y = c3.height();
+            ct3.font = "20px Calibri";
+
+            ct3.fillStyle = "white";
+            ct3.strokeStyle = "black";
+            ct3.fillRect(0, 0, x, y); //fill the canvas
+            if (model) {
+                initGraph3();
+            }
+        }
+
+        function respondCanvas() {
+            var c = $('#paintbox');
+            var ct = c.get(0).getContext('2d');
+            var container = $(c).parent();
+            c.attr('width', $(container).width() - 2); //max width
+            c.attr('height', $(container).height()); //max height
+
+            //Redraw & reposition content
+            //		draw();
+            var x = c.width();
+            var y = c.height();
+            ct.font = "20px Calibri";
+
+            ct.fillStyle = "white";
+            ct.strokeStyle = "black";
+            ct.fillRect(0, 0, x, y); //fill the canvas
+            initGraph();
+        }
+
+        function respondCanvas1() {
+            var c1 = $('#histogram');
+            var ct1 = c1.get(0).getContext('2d');
+            var container1 = $(c1).parent();
+            c1.attr('width', $(container1).width() - 2); //max width
+            c1.attr('height', $(container1).height()); //max height
+
+            //Redraw & reposition content
+            //		draw();
+            var x = c1.width();
+            var y = c1.height();
+            ct1.font = "20px Calibri";
+
+            ct1.fillStyle = "white";
+            ct1.strokeStyle = "black";
+            ct1.fillRect(0, 0, x, y); //fill the canvas
+            initGraph();
+        }
+
+
+        function zetgrafieken() {
+
+            //Run function when browser  resize
+            $(window).resize(respondCanvas);
+            respondCanvas();
+
+
+            $(window).resize(respondCanvas3);
+
+
+            respondCanvas3();
+            //Initial call
+
+
+            //Run function when browser  resize
+            $(window).resize(respondCanvas1);
+            //Initial call
+            respondCanvas1();
+        }
+
+        $(document).ready(function() {
+            $(document).on('click', function(event) {
+                if ((model.nopage() == 1) && (!$(event.target).closest('#menucontainer').length) && (!$(event.target).closest('#menubutton').length) && (!$(event.target).closest('#talen').length)) {
+                    model.toonMenu(false);
+
+                }
+            });
+            var url = document.URL;
+            var hash;
+            taal = leescookie("language");
+            var q = url.split('?')[1];
+            if (q != undefined) {
+                $("#dialog-ontop").dialog({
+                    resizable: true,
+                    height: 400,
+                    width: 600,
+                    modal: false,
+                    autoOpen: false
+                });
+                q = q.split('&');
+                for (i = 0; i < q.length; i++) {
+                    hash = q[i].split('=');
+                    if (hash[0] == "ontop") {
+                        ontoptekst = hash[1];
+                    }
+
+                    if (hash[0] == "digibook") {
+                        digibook = hash[1];
+                    }
+                    if (hash[0] == "dialogtitle") {
+                        dialogtitle = decodeURI(hash[1]);
+                    }
+                    if (hash[0] == "width") {
+
+                        $("#dialog-ontop").dialog({
+                            width: +parseInt(hash[1], 10)
+                        });
+                    }
+                    if (hash[0] == "height") {
+
+                        $("#dialog-ontop").dialog({
+                            height: +parseInt(hash[1], 10)
+                        });
+                    }
+                    if (hash[0] == "language") {
+
+                        taal = +parseInt(hash[1], 10);
+                    }
+                    if (hash[0] == "code")
+                        numcode = parseInt(hash[1], 10);
+                    if (isNaN()) {
+                        numcode = null
+                    } else {
+                        if ((numcode < 100000) || (numcode >= 1000000)) {
+                            numcode = null
+                        }
+                    }
+
+                }
+            }
+            assen = new Assen();
+            assen.percentagesy = true;
+            assen.gridy = true;
+            assen1 = new Assen();
+            assen.stapy = 0.1;
+            assen.firstPointy = 0;
+            assen.aantalintervalleny = 10;
+            $("#eerstepagina").click(function() {
+                model.nopage(1);
+                model.simulate(0);
+                zetgrafieken();
+                initGraph();
+
+            });
+
+            model = new Model();
+            ko.applyBindings(model);
+            model.selectedtaal(taal);
+            if (numcode) {
+                model.numeric_code(numcode);
+            }
+            numcode = +model.numcode();
+            if (ontoptekst != "") {
+                ontopLoad('../../digibook/' + digibook + '/ontop/' + ontoptekst, dialogtitle);
+                model.nopage(1);
+                $("#dialog-ontop").dialog("open");
+            }
+            maaktabel = "<table align='center'>" + model.trek_header();
+            $("#maaktabel").html(maaktabel + '</table>');
+
+            zetsimul();
+            zettaal(taal);
+            zetgrafiekenlogo();
+            zetgrafieken();
+            model.startdeur();
+            $("#plaat0").click(function() {
+                model.zetstap(0);
+
+            });
+            $("#plaat1").click(function() {
+                model.zetstap(1);
+            })
+            $("#plaat2").click(function() {
+
+                model.zetstap(2);
+
+            });
+            $("#restarten").click(function() {
+                model.number_draw(0);
+                model.number_repeat(0);
+                model.keepChoice(0);
+                model.changeChoice(0);
+                alleen_keeps = [];
+                alleen_changes = [];
+                maaktabel = "<table align='center' style='text-align:right' class='trek'> <tr ><th>#</th> ";
+                for (i = 0; i < model.size_group(); i += 1) {
+                    maaktabel += '<th>' + (i + 1) + '</th>';
+                }
+                maaktabel += '</tr>';
+
+                $("#maaktabel").html(maaktabel + '</table>');
+            });
+            $("#teller0").click(function() { //resultaten verwijderen
+                model.change_wins(0);
+                model.keep_wins(0);
+                model.keep_goat(0);
+                model.change_goat(0);
+                model.changeChoice(0);
+                model.keepChoice(0);
+                model.niet_gekozen(-1);
+                alleen_keeps = [];
+                alleen_changes = [];
+
+                if (model.stapdeur() == 2) {
+                    model.startdeur();
+                }
+            });
+            $("#start_simuleren").click(function() {
+
+
+                model.simulate(1);
+                model.nopage(1);
+                zetgrafieken();
+                maakSchoon();
+                999
+                initGraph();
+            });
+            $("#start_monty").click(function() {
+                model.nopage(2);
+            });
+            $("#start_lootjes").click(function() {
+                $("#dialog-lootjes").dialog("open");
+            });
+            $(".tempo0").click(function() {
+                model.tempoMaken(0);
+            });
+            $(".tempo1").click(function() {
+                model.tempoMaken(1);
+            });
+            $(".tempo2").click(function() {
+                model.tempoMaken(2);
+            });
+            $(".schoon").click(function() {
+                maakSchoon();
+            });
+            $(".schoon").change(function() {
+                maakSchoon();
+            });
+            $("#doe_trekking").click(function() {
+                model.doe_trekking();
+
+            });
+            $("#simulate_trek").click(function() {
+                $("#dialog-lootjes").dialog("close");
+                model.simulate(2);
+                model.nopage(1);
+                zetgrafieken();
+                maakSchoon();
+                initGraph();
+            });
+            $("#internet").click(function() {
+                $("#dialog-internet").dialog("open");
+            });
+        });
+
+        function geefhelp() {
+            model.maakurl();
+            window.open(model.url(), "_blank");
+        }
+        $('#menu li').on("click", function() {
+            var hulp, tonen, laatste, i, taal, taal1;
+            hulp = $(this).attr("id");
+
+            switch (parseInt(hulp, 10)) {
+
+
+                case 2:
+                    geefhelp();
+
+                    break;
+
+
+                case 7:
+                    window.open("../index.html");
+                    break;
+                case 9:
+                    location.reload();
+                    break
+
+            }
+        });
+
+        function ontopLoad(naam, dialogtitle) {
+            $('#myIframe').attr('src', naam);
+            $("#dialog-ontop").dialog({
+                'title': dialogtitle
+            });
+        };
+        $("#afronden_spel").click(function() {
+            model.startdeur()
+        });
+        $("#sluiten").click(function() {
+            model.nopage(0);
+            model.startdeur()
+        });
+        $("#sluitengraf").click(function() {
+            model.nopage(2);
+        });
+        $("#sluiten_internet").click(function() {
+            $("#dialog-internet").dialog("close");
+        })
+        var sluitinternet = function() {
+            $("#dialog-internet").dialog("close");
+
+        };
+
+
+        $("#openinternet").click(function() {
+            $("#dialog-internet").dialog("open");
+        })
+
+
+        $("#internet").click(function() {
+            $("dialog-internet").dialog("open");
+        });
+        $("#toongrafiek").click(function() {
+            model.toonSimuleren(false);
+            $(".page3").hide();
+            model.simulate(3);
+            model.nopage(3);
+            respondCanvas3();
+            initGraph3();
+        });
+
+        function startnew() {
+            active_code = nieuw;
+            $("#doel").text(doel_new[taal]);
+            $("#dialog-code").dialog("open");
+        }
+        function wissen(){
+            active_code = schoon;
+            if (model.numcode() == "123446") {
+                bestaat_nummer_paswoord_code(+model.numcode(), '', schoon);
+                return;
+
+            }
+            $("#doel").text(doel_schoon[taal]);
+            $("#dialog-code").dialog("open");
+
+        };
+        function verwijderen() {
+            active_code = verwijder;
+            $("#doel").text(doel_delete[taal]);
+            $("#dialog-code").dialog("open");
+
+        };
+
+        function testcode() {
+            var valid;
+            var numcode = +model.numcode();
+            numcode = parseInt(numcode, 10);
+            valid = true;
+            if (isNaN(numcode)) {
+                valid = false;
+            }
+            if (valid) {
+                valid = ((numcode >= 100000) && numcode < 1000000)
+            }
+            if (!valid) {
+                alert(geen_correcte_code[taal]);
+            }
+            return valid;
+        }
+
+        function ok_dialog() {
+            var hulp = model.password();
+            var hulp = hulp.trim();
+            model.password(hulp);
+            if (hulp == '') {
+                alert(wachtwoord_vereist[taal])
+            } else {
+                hulp = model.numcode();
+                if (testcode(hulp)) {
+                    bestaat_nummer_paswoord_code(hulp, model.password(), active_code);
+                }
+            }
+        };
+
+        function cancel_dialog() {
+            $("#dialog-code").dialog("close");
+        };
+
+
+        function startheroku() {
+            url = heroku + "?dataset=" + model.numcode() + "&language = " + taal;
+            window.open(url, "_blank");
+        }
+
+        function starten() {
+            console.log('starten   ', model.numcode())
+            if (model.numcode() == "123446") {
+                startheroku()
+            } else {
+                if (testcode()) {
+                    //naamurl = heroku + 'exists?nummer=' + model.numcode()+'&wachtwoord=""&code=0';
+                    naamurl = heroku + 'bestaat?nummer=' + model.numcode();
+                    $.getJSON(naamurl, function(data) {
+                            if (data.exists) {
+                                startheroku()
+                            } else
+                                alert(vulin(dataset_bestaat_niet[taal], model.numcode()));
+                        }
+
+                    )
+                }
+
+            }
+        };
+
+    </script>
+    <div id="dialog-internet">
+        <h2><span id="collect_data"></span></h2>
+        <div style="text-align:center;margin-top:10px;">
+            <button class="statbutton" onclick="startnew()"><span id="new_dataset"></span></button>
+            <button class="statbutton" onclick="starten()"><span class="view_dataset"></span></button><br>
+            <button class="statbutton" onclick="wissen()"><span id="clear_dataset"></span></button>
+            <button class="statbutton" onclick="verwijderen()"><span id="delete_dataset"></span></button>
+            <br>
+            <button onclick="sluitinternet()" class="statbutton hoog" style="background-color:aqua"><span class="alg_sluit"></span></button>
+
+
+        </div>
+    </div>
+    <div id="dialog-code">
+        <h2><span id="doel"></span></h2>
+        <p> <span id="numeric_code"></span></p>
+
+        <p style="margin-top:20px;margin-bottom:30px"><span class="geef_code"></span> *
+            <input type="text" maxlength="6" style="width:80px" placeholder="123456" data-bind="value:numcode">
+        </p>
+        <p><span id="geef_wachtwoord"></span>
+            <span id="wachtwoord"></span>* <input type="password" data-bind="value:password" style="width:80px">
+        </p>
+        <br>
+        <br>
+
+
+        <button class="statbutton" onclick="cancel_dialog()"><span class="alg_annuleer"></span></button>
+        <button class="statbutton" onclick="ok_dialog()"><span class="alg_ok"></span></button>
+
+
+    </div>
+
+    <div id="dialog-tooninfo">
+        <div>
+
+            <span id="opdrachten"></span>
+        </div>
+    </div>
+    <div id="dialog-lootjes">
+        <div style="position:absolute;left:0;right:0;top:0;height:60px;">
+
+            <h3><span class="zichzelf_trekken"></span></h3>
+            <p>
+                <button id="doe_trekking" style="margin-right:30px"> <span id="make_draw"></span>
+                </button>
+                <span class="grootte_groep"></span>
+                <input type="spinner" data-bind="value:size_group">
+                <button id="restarten" type="button" style="margin-left:30px"><span class='clear_result'></span>
+                </button>
+            </p>
+            <p style="margin-top:10px">
+                <span id="aantal_over"></span><span data-bind="text:tekst_repeat"></span>
+            </p>
+        </div>
+        <div style="position:absolute;left:0;right:0;top:120px;bottom:60px;overflow:scroll;">
+
+
+            <div id="maaktabel"></div>
+
+        </div>
+        <div style="position:absolute; left:0;right:0;bottom:0;height:70px; text-align:center">
+            <button id="simulate_trek" style="width:300px; height:50px"><span class="simuleer_veel"></span>
+            </button>
+        </div>
+
+
+    </div>
+</body>
+<script>
+    $("#info").click(function() {
+        $("#dialog-tooninfo").dialog("open");
+    })
+
+</script>
+
+</html>

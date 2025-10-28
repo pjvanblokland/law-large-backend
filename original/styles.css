@@ -1,0 +1,293 @@
+	body,
+	html {
+		margin: 0;
+		height: 100%;
+		width: 100%;
+		font-family: Arial;
+		font-size: 13px;
+	}
+	* {
+		box-sizing: border-box;
+	}
+	.attention {
+		color: red;
+		font-size: 130%;
+	}
+	border {
+		border: 5px solid #ddd;
+		border-radius: 4px;
+		padding: 5px;
+	}
+	caption {
+		font-weight: bold
+	}
+	th.trek {
+		font-weight: bold;
+		min-width: 25px
+	}
+	td.trek {
+		width: 25px;
+		text-align: right;
+	}
+	td.blink {
+		background: yellow;
+	}
+	.speedbutton {
+		-webkit-appearance: none;
+		display: inline-block;
+		width: 30px;
+		height: 33px;
+		letter-spacing: -4px;
+		text-align: center;
+		font-size: 18px;
+	}
+	.contextMenu {
+		background: #e1efc7;
+		border: 1px solid gray;
+		padding: 10px;
+		display: inline-block;
+		min-width: 100px;
+		-moz-box-shadow: 2px 2px 2px silver;
+		-webkit-box-shadow: 2px 2px 2px silver;
+		z-index: 99999;
+	}
+	ul {
+		list-style-type: none;
+	}
+	ul li {
+		margin: 0;
+	}
+	ul li {
+		display: block;
+		/* Nieuw */
+		padding: 15px;
+		background-color: #44699C;
+		font-family: Verdana;
+		color: white;
+	}
+	ul li:hover {
+		background-color: #5F94DC;
+	}
+	p {
+		margin: 0
+	}
+	.voorpagina {
+		margin-left: auto;
+		margin-right: auto;
+		text-align: center;
+	}
+	.screen_container {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		min-height: 100%;
+		margin: 0;
+	}
+	fieldset {
+		display: inline-block;
+	}
+	.fieldset-auto-width {
+		display: inline-block;
+	}
+	.row,
+	.col {
+		/*overflow: hidden;*/
+		position: absolute;
+	}
+	.row {
+		left: 0;
+		right: 0;
+	}
+	.col {
+		top: 0;
+		bottom: 0;
+	}
+	.scroll-x {
+		overflow-x: auto;
+	}
+	.scroll-y {
+		overflow-y: auto;
+	}
+	.picture {
+		width: 100%;
+		height: 200px
+	}
+	.deurContainer {
+		margin: 0 auto;
+		width: 650px;
+		height: 280px;
+		display: block;
+	}
+	.deur {
+		width: 32%;
+		display: inline-block;
+		margin: 0;
+		float: left;
+	}
+	.titelDeur {
+		text-align: center;
+		font: 20px bold arial;
+		margin: 10px;
+	}
+	.indeur {
+		position: absolute;
+		top: 40px;
+		bottom: 0;
+		left: 0;
+		right: 0;
+	}
+	.cheat {
+		width: 50px;
+		height: 50px;
+		transform: translate(25%, -50px);
+	}
+	.cheat {
+		width: 50px;
+		height: 50px;
+		transform: translate(25%, -50px);
+	}
+	.cheatImage {
+		width: 50px;
+		height: 50px;
+	}
+	.results {
+		border: 2px solid blue;
+		font-size: 1.6em;
+	}
+	#close_graph:hover {
+		background-color: black;
+		color: aqua;
+		cursor: pointer;
+	}
+.mpage3{margin:10px;
+        font:20px bold arial;
+        padding:10px;;
+    color:white;
+    border-radius:10px;
+}
+	.statbutton {
+		min-width: 180px;
+		font-size: 14px;
+		font-weight: bold;
+		margin-right: 10px;
+		margin-bottom: 15px;
+		padding-left: 10px;
+		padding-right: 10px;
+		min-height: 25px;
+	}
+	.hoog {
+		height: 35px;
+	}
+	.tekst {
+		color: white;
+		font-weight: bold;
+	}
+	.tekst1 {
+		color: white;
+		font-weight: bold;
+		font-size: 16px;
+		padding: 6px 15px 6px 15px;
+		border-radius: 5px;
+		vertical-align: middle;
+	}
+	.resultTabel {
+		margin-top: 10px;
+		width: 30%;
+		margin-left: auto;
+		margin-right: auto;
+		min-width: 250px;
+	}
+	.titel_row1 {
+		padding-left: 5%;
+		margin-top: 10px;
+	}
+	.titel_grafiek {
+		font-size: 1.5rem;
+	}
+	.row1 {
+		background: orange;
+		top: 0;
+		height: 40px;
+		vertical-align: middle;
+		color: white;
+	}
+	.row2 {
+		top: 40px;
+		height: 240px;
+	}
+	.row3 {
+		top: 280px;
+		height: 50px;
+		text-align: center;
+	}
+	.row4 {
+		top: 330px;
+		bottom: 0;
+	}
+	.row5 {
+		top: 480px;
+		height: 100px;
+	}
+	.koppen {
+		height: 660px;
+	}
+	@media (max-width: 700px) {
+		.deurContainer {
+			width: 100%;
+			height: 150px
+		}
+		.picture {
+			height: 150px;
+		}
+		.deurContainer {
+			height: 230px;
+		}
+		.row3 {
+			top: 230px;
+		}
+		.row4 {
+			top: 280px;
+		}
+		.row5 {
+			top: 430px;
+		}
+		.results {
+			font-size: 1.0em;
+		}
+		.resultTabel {
+			min-width: 200px;
+		}
+		.koppen {
+			height: 610px;
+		}
+	}
+	@media (max-width: 500px) {
+		.deurContainer {
+			width: 100%;
+			height: 100px
+		}
+		.picture {
+			height: 100px;
+		}
+		.deurContainer {
+			height: 160px;
+		}
+		.row3 {
+			top: 180px;
+		}
+		.row4 {
+			top: 230px;
+		}
+		.row5 {
+			top: 330px;
+		}
+		.koppen {
+			height: 430px;
+		}
+		.results {
+			font-size: 0.8em;
+		}
+		.resultTabel {
+			min-width: 160px;
+		}
+	}
