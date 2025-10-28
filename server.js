@@ -3,8 +3,7 @@ var cors = require('cors');
 var app = express();
 app.use(cors());
 
-// Serve static files from public directory
-app.use(express.static('public'));
+// No static file serving needed - this is a pure API service
 
 // Change port and remove Socket.IO server
 app.listen(process.env.PORT || 3002, () => {
@@ -196,21 +195,36 @@ app.get('/delete', (req, res) => {
     delete DATASET_LIST[+req.query.number];
 });
 app.get('/info', (req, res) => {
-    var info = {};
-     info.verbonden = SOCKET_LIST.keys(obj).length;
-     info.aantaltafels = DATASET_LIST.keys(obj).length;
-     info.tafels = [];
-    for (dataset in DATASET_LIST) {
-        info.tafels.push({
-            "number": datasset.id,
-            "keep": dataset.keep,
-            length,
-            "change": dataset.change.length
+    var number = +req.query.number; // Convert to number
+    if (number && DATASET_LIST[number]) {
+        var dataset = DATASET_LIST[number];
+        res.json({
+            dataset: {
+                id: dataset.id,
+                name: dataset.name,
+                keep: dataset.keep,
+                change: dataset.change,
+                aantalkeep: dataset.aantalkeep,
+                aantalchange: dataset.aantalchange
+            }
         });
+    } else {
+        // General info about all datasets
+        var info = {};
+        info.verbonden = 0; // No sockets in REST API
+        info.aantaltafels = Object.keys(DATASET_LIST).length;
+        info.tafels = [];
+        for (var datasetId in DATASET_LIST) {
+            var dataset = DATASET_LIST[datasetId];
+            info.tafels.push({
+                "number": dataset.id,
+                "keep": dataset.keep.length,
+                "change": dataset.change.length
+            });
+        }
+        res.json(info);
     }
-    res.json(info);
-
-})
+});
 
 
 function create_dataset(nummer, name) {
