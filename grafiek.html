@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+    <!-- Socket.IO not needed for REST API version -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+
+    <script src="public/files/assen.js"></script>
+
+
+    <title>Grafiek drie deuren probleem</title>
+
+    <link rel="shortcut icon" type="image/png" href="favicon.ico">
+    <style>
+        * {
+           
+            font-family: arial;
+        }
+
+        body,
+        html {
+            margin: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+
+        }
+
+        .screen_container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            min-height: 100%;
+        }
+
+        .row,
+        .col {
+            overflow: hidden;
+            position: absolute;
+        }
+
+        .row {
+            left: 0;
+            right: 0;
+        }
+
+        .col {
+            top: 0;
+            bottom: 0;
+        }
+
+        .tekst {
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+         
+        }
+
+        .tekst1 {
+            color: white;
+
+            font-weight: bold;
+            font-size: 16px;
+            padding: 6px 15px 6px 15px;
+            border-radius: 5px;
+                   vertical-align: middle;
+        }
+        .header-nav {display:inline-block;vertical-align:middle;height:50px"
+
+    </style>
+
+<body>
+
+    <div class="screen_container">
+        <header style="background: orange; padding: 16px 16px;">
+            <div class="header-nav" >
+                <!-- drie deuren probleem-->
+                <span  id="drie_deuren" class="tekst"></span>
+                     <span id="numcode" class="tekst"></span> <span>&nbsp;&nbsp;&nbsp;</span>  
+                <span id="keep_text" class="tekst1" style="background:blue;"></span>
+                <span>&nbsp;&nbsp;&nbsp;</span>
+                <span id="change_text" class="tekst1" style="background:lime;"></span>
+                
+
+            </div>
+        </header>
+
+        <div style="position:absolute;top:60px;bottom:0;left:0;right:0">
+            <canvas id="paintbox3" width="500" height="500"></canvas>
+        </div>
+    </div>
+
+</body>
+
+<script>
+    var model = null;
+    var defaultfont = "20px Arial";
+    var titelfont = "24px Arial";
+    var assenfont = "12px Arial";
+    var kleurkeep = "blue"; //"#99D9E9";
+    var kleurchange = "lime";
+    var taal = 0;
+    var heroku = "https://law-large-backend.onrender.com/"; // Backend URL
+    var currentDataset = "123446";
+
+
+    var keep = [];
+    var change = [];
+
+    function refresh() {
+        var url = document.URL;
+        console.log(' url  ', url)
+        var hash;
+        var q = url.split('?')[1];
+        var numcode = "123446"
+
+        if (q != undefined) {
+            q = q.split('&');
+            for (i = 0; i < q.length; i++) {
+                hash = q[i].split('=');
+                if (hash[0] == "dataset") {
+                    console.log('dataset ', hash[1]);
+                    numcode=hash[1];
+                    currentDataset = hash[1];
+                }
+               
+            }
+        }
+        currentDataset = numcode;
+      var taal = parseInt(localStorage.getItem('language'),10)||0 ;
+
+        
+        zettaal(taal);
+        if (numcode != "123446"){$("#numcode").text('('+numcode+')');}
+        
+        // Start polling for data
+        loadDataset();
+        setInterval(loadDataset, 1000); // Poll every second
+    }
+    
+    function loadDataset() {
+        var url = heroku + 'info?number=' + currentDataset;
+        console.log('Loading dataset from:', url);
+        console.log('Current dataset:', currentDataset);
+        $.get(url, function(data) {
+            console.log('API Response received:', data);
+            if (data && data.dataset) {
+                keep = data.dataset.keep || [];
+                change = data.dataset.change || [];
+                console.log('Dataset loaded - keep:', keep.length, 'change:', change.length);
+                console.log('keep data:', keep);
+                console.log('change data:', change);
+                initGraph3();
+            } else {
+                console.log('No dataset in response. Full response:', data);
+                console.log('Response type:', typeof data);
+            }
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.log('API call failed!');
+            console.log('Status:', jqXHR.status);
+            console.log('Status text:', textStatus);
+            console.log('Error:', errorThrown);
+            console.log('Response text:', jqXHR.responseText);
+        });
+    }
+
+
+    function respondCanvas3() {
+        var c3 = $('#paintbox3');
+        var ct3 = c3.get(0).getContext('2d');
+        var container3 = $(c3).parent();
+
+        c3.attr('width', $(container3).width() - 2); //max width
+        c3.attr('height', $(container3).height()); //max height
+
+        //Redraw & reposition content
+        //		draw();
+        var x = c3.width();
+        var y = c3.height();
+        ct3.font = "20px Calibri";
+
+        ct3.fillStyle = "white";
+        ct3.strokeStyle = "black";
+        ct3.fillRect(0, 0, x, y); //fill the canvas
+        if (model) {
+            initGraph3();
+        }
+    }
+  
+
+    $(document).ready(function() {
+        refresh();
+        model = "started";
+        respondCanvas3();
+
+        $(window).resize(respondCanvas3);
+
+
+    });
+    var canvas3, context3, assen;
+    var chartLeft3, chartRight3, chartHeight3, chartBottom3, chartTop = 50;
+    assen = new Assen();
+    assen.percentagesy = true;
+    assen.gridy = true;
+    assen.stapy = 0.1;
+    assen.firstPointy = 0;
+    assen.aantalintervalleny = 10;
+
+    function initsettings3() {
+        "use strict";
+        context3.rect(0, 0, canvas3.width, canvas3.height);
+        context3.fillStyle = "White";
+        context3.fill();
+        context3.beginPath();
+        context3.fillStyle = "Black";
+        chartLeft3 = 50
+        chartRight3 = canvas3.width - 50;
+        chartHeight3 = canvas3.height - 50;
+        chartBottom3 = canvas3.height - 30;
+        context3.save();
+        context3.translate(0.5, 0.5);
+    }
+
+    function tekenkeeps() {
+        context3.beginPath();
+        //	if (model.alleen_keep()) {
+        context3.strokeStyle = kleurkeep;
+		
+        context3.fillStyle = kleurkeep;
+        for (i = 0; i < keep.length; i += 1) {
+            if (i > 0) {
+                context3.moveTo(assen.fx * i + assen.cx, assen.fy * keep[i - 1] / i + assen.cy);
+                context3.lineTo(assen.fx * (i + 1) + assen.cx, assen.fy * keep[i] / (i + 1) + assen.cy);
+                context3.stroke();
+            }
+            context3.beginPath();
+            context3.arc(assen.fx * (i + 1) + assen.cx, assen.fy * keep[i] / (i + 1) + assen.cy, 5, 0, 2 * Math.PI)
+            context3.fill();
+            context3.beginPath();
+        }
+    }
+    //}
+
+    function tekenchanges() {
+        //	if (model.alleen_change()) {
+        context3.beginPath();
+        context3.strokeStyle = kleurchange;
+        context3.fillStyle = kleurchange;
+        for (i = 0; i < change.length; i += 1) {
+            if (i > 0) {
+                context3.moveTo(assen.fx * i + assen.cx, assen.fy * change[i-1] / i + assen.cy);
+                context3.lineTo(assen.fx * (i + 1) + assen.cx, assen.fy * change[i] / (i + 1) + assen.cy);
+                context3.stroke();
+            }
+            context3.beginPath();
+            context3.arc(assen.fx * (i+1) + assen.cx, assen.fy * change[i] / (i + 1) + assen.cy, 5, 0, 2 * Math.PI)
+            context3.fill();
+
+            context3.beginPath();
+        }
+    }
+    //	}
+
+    function initGraph3() {
+        if (model == null) {
+            return;
+        }
+        canvas3 = document.getElementById('paintbox3');
+        context3 = canvas3.getContext('2d');
+        initsettings3();
+        assen.minimumx = 0;
+        assen.maximumx = Math.max(keep.length, change.length);
+        assen.maximumx = Math.max(10, assen.maximumx + 5)
+        assen.minimumy = 0;
+        assen.dimensies(chartLeft3, chartTop, chartRight3, chartBottom3);
+        if (assen.maximumx <= 15) {
+            assen.firstPointx = 0;
+            assen.stapx = 1;
+            assen.aantalintervallenx = assen.maximumx;
+            assen.kommax = 0;
+            assen.zetfactoren();
+            assen.stepx = self.stapx * self.fx;
+
+            assen.tekenenx(context3);
+
+
+        } else {
+            assen.tekenxas(assen.minimumx, assen.maximumx, false, context3)
+        };
+        assen.tekeneny(context3);
+        //tekennet();
+        //tekenPath();
+        //context3.strokeStyle = "Black";
+        //context3.rect(assen.links, assen.boven, assen.rechts=assen.links, assen.onder-assen.boven);
+        //context3.stroke();
+		context3.lineWidth=3;
+        tekenchanges();
+        tekenkeeps();
+		context3.lineWidth=1;
+        //tekenboxplot();
+        context3.restore();
+        
+        //tekenhist(aantalGraph1);
+
+    }
+
+    function zettaal(taal) {
+        var drie_deuren = ["three-door problem"  ,"Drei Türen Problem"  ,"Monty Hall problemi"  ,"Drie deuren probleem"  ,"problem z trzema drzwiami"  ,"Problème de Monty Hall"  ,"tre-dörrsproblem"  ,"problème de trois portes"  ,"проблема трех дверей"  ,"problema a tre porte"  ,"三门问题"  ,"3ドア問題"  ,"problema de três portas" ] ;
+        var keep_text = ["Same choice", "Gleiche Wahl", "Aynı seçim", "Zelfde keuze", "Ten sam wybór", "Misma opción", "Samma val", "Même choix", "Тот же выбор", "Stessa scelta", "相同的选择", "同じ選択", "Mesma escolha"];
+        var change_text = ["Change choice", "Auswahl ändern", "Seçimi değiştir", "Verander keuze", "Zmień wybór", "Cambiar elección", "Ändra val", "Changer le choix", "Изменить выбор", "Cambia scelta", "改变选择", "選択を変更", "Alterar escolha"];
+        $(document).prop('title', drie_deuren[taal]);
+        $("#drie_deuren").text(drie_deuren[taal]);
+        $("#keep_text").text(keep_text[taal]);
+        $("#change_text").text(change_text[taal])
+    }
+
+</script>

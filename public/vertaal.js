@@ -133,7 +133,7 @@ function zettaal(taal) {
     expireDate.setTime(expireDate.getTime() + (60 * 24 * 60 * 60 * 1000));
     hulp = "language=" + taal + ";expires=" + expireDate.toUTCString() + ";path=/";
     document.cookie = hulp;
-    model.maakurl();
+ 
 
     $("#aantal_over").text(aantal_over[taal]);
     $(".alg_aantal").text(alg_aantal[taal]);

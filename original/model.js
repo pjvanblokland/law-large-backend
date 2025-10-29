@@ -1,8 +1,20 @@
-function Taal(id, naam) {
-	"use strict";
-	this.naam = naam;
-	this.id = id;
-}
+var numcode = null;
+
+const TALEN = [
+	{ id: 0, naam: "English", code: "eng" },
+	{ id: 1, naam: "Deutsch", code: "eng" },
+	{ id: 2, naam: "Türkçe", code: "eng" },
+	{ id: 3, naam: "Nederlands", code: "ned" },
+	{ id: 4, naam: "Polski", code: "eng" },
+	{ id: 5, naam: "Español", code: "eng" },
+	{ id: 6, naam: "Svenska", code: "eng" },
+	{ id: 7, naam: "Français", code: "eng" },
+	{ id: 8, naam: "Пусский", code: "eng" },
+	{ id: 9, naam: "Italiano", code: "eng" },
+	{ id: 10, naam: "中文", code: "eng" },
+	{ id: 11, naam: "日本語", code: "eng" },
+	{ id: 12, naam: "Português", code: "eng" }
+];
 
 function Keuze(Id, Name) {
 	"use strict";
@@ -11,9 +23,19 @@ function Keuze(Id, Name) {
 }
 
 function Model() {
-	"use strict";
-	var self = this,
-		i;
+	var self = this, i;
+	this.url = ko.observable('help');
+	this.M_TALEN = TALEN;
+	this.selectedTaal = ko.observable(-1);
+	this.selectedTaal.subscribe(function () {
+		var language = self.selectedTaal();
+		if (language >= 0) {
+			localStorage.setItem('language', language);
+			self.url("../help/" + self.M_TALEN[language].code + "/index.html?fcount.htm");
+			zettaal(language);
+		}
+	});
+
 
 	this.toonMenu = ko.observable(false);
 
@@ -32,15 +54,15 @@ function Model() {
 			return "#33CCFF";
 		}
 	};
-     self.bestaat=ko.observable(true)
-    self.geefColor = function () {
+	self.bestaat = ko.observable(true)
+	self.geefColor = function () {
 		if (self.bestaat()) {
 			return "white";
 		} else {
 			return "red";
 		}
 	};
-   
+
 
 
 	this.kans = ko.observable(0.5);
@@ -56,33 +78,25 @@ function Model() {
 
 
 
-	this.talen = ko.observableArray([
-        new Taal("0", "English"),
-        new Taal("1", "Deutsch"),
-        new Taal("2", "Türkçe"),
-        new Taal("3", "Nederlands"),
-        new Taal("4", "Polski"),
-        new Taal("5", "Español"),
-        new Taal("6", "Svenska"),
-        new Taal("7", "Français"),
-        new Taal("8", "Пусский"),
-        new Taal("9", "Italiano"),
-       new Taal("10", "中文"),
-        new Taal("11", "日本語"),
-         new Taal("12", "Português")
-    ]);
+
 	this.selectedtaal = ko.observable(taal);
 	this.selectedtaal.subscribe(function () {
-		taal = self.selectedtaal();
-		zettaal(taal);
-		self.zetmelding();
-		self.keuzes()[0].Name(keep_choice[taal]);
-		self.keuzes()[1].Name(change_choice[taal]);
+		var language = self.selectedTaal();
+		if (language >= 0) {
+			localStorage.setItem('language', taal);
+			self.url("../help/" + self.M_TALEN[taal].code + "/index.html?bootstrap1.htm");
+			zettaal(language);
+			self.toonMenu(false);
+
+			self.zetmelding();
+			self.keuzes()[0].Name(keep_choice[taal]);
+			self.keuzes()[1].Name(change_choice[taal]);
+		}
 	});
 	this.keuzes = ko.observableArray([
-        new Keuze("0", keep_choice[taal]),
-        new Keuze("1", change_choice[taal])
-    ]);
+		new Keuze("0", keep_choice[taal]),
+		new Keuze("1", change_choice[taal])
+	]);
 	this.selectedkeuze = ko.observable(0);
 	this.selectedkeuze.subscribe(function () {
 		maakSchoon();
@@ -108,59 +122,7 @@ function Model() {
 	this.alleen_change.subscribe(function () {
 		initGraph3();
 	})
-	this.url = ko.observable('help');
-	    this.maakurl = function () {
-        var hulp, hulp1;
-        hulp1 = +this.selectedtaal();
-        switch (hulp1) {
-            case 0:
-                hulp = 'eng';
-                break;
-            case 1:
-                hulp = 'du';
-                break;
-            case 2:
-                hulp = 'tr';
-                break;
-            case 3:
-                hulp = 'ned';
-                break;
-            case 4:
-                hulp = 'pln';
-                break;
-            case 5:
-                hulp = 'sp';
-                break;
-            case 6:
-                hulp = 'swe';
-                break;
-            case 7:
-                hulp = 'fr';
-                break;
-            case 8:
-                hulp = 'rus';
-                break;
-            case 9:
-                hulp = 'it';
-                break;
-            case 10:
-                hulp = 'chi';
-                break;
-            case 11:
-                hulp = 'jap';
-                break;
-            case 12:
-                hulp = "por";
-                break;
-        }
-      
-        if ((hulp == "tr") || (hulp == "pln") || (hulp == "sp") || (hulp == "swe") || (hulp == "fr") || (hulp == "rus") || (hulp == "it") || (hulp == "chi") || (hulp == "jap") || (hulp == "por")) {
-            hulp = "eng"
-        };
-		hulp = "../help/" + hulp + "/index.html?law_large.htm";
-		self.url(hulp);
 
-	};
 	this.size_group = ko.observable(5);
 	this.size_group.subscribe(function () {
 
@@ -251,7 +213,7 @@ function Model() {
 	this.volgendeStap = function () {
 		var i, j, som, hulp, mat = [],
 			enkel,
-        som = 0;
+			som = 0;
 		if (self.showmemory()) {
 			aantalsteps += 1;
 			if (aantalsteps >= aantalgeheugen) {
@@ -265,9 +227,9 @@ function Model() {
 					som += 1
 				}
 			} else {
-                enkel=true;
+				enkel = true;
 				mat = trekkingkort(self.size_group());//echt per getal uitvoeren
-			
+
 				for (j in mat) {
 					if (mat[j] == j) {
 						enkel = false;
@@ -425,7 +387,7 @@ function Model() {
 		return observable;
 	};
 	this.doe_trekking = function () {
-		var i, j, h, enkel=true, klasse;
+		var i, j, h, enkel = true, klasse;
 		var a = [];
 		i = self.number_draw();
 		self.number_draw(i + 1);
@@ -440,7 +402,7 @@ function Model() {
 			a[i] = h;
 		}
 
-		
+
 
 		maaktabel += '<tr><td style="background-color:white">' + self.number_draw() + '</td><td>&nbsp;&nbsp;</td>';
 		for (i = 0; i < self.size_group(); i += 1) {
@@ -472,14 +434,14 @@ function Model() {
 	this.keepChoice.subscribe(function () {
 		var hulp;
 		/* switch (+self.keep_wins()) {
-		     case 0:
-		         hulp = auto0[taal];
-		         break;
-		     case 1:
-		         hulp = auto1[taal];
-		         break;
-		     default:
-		         hulp = self.keep_wins() + ' ' + autos[taal];
+			 case 0:
+				 hulp = auto0[taal];
+				 break;
+			 case 1:
+				 hulp = auto1[taal];
+				 break;
+			 default:
+				 hulp = self.keep_wins() + ' ' + autos[taal];
 		 }*/
 		$("#keep_wins_text").text(self.keep_wins());
 		if (self.keepChoice() > 0) {
@@ -489,14 +451,14 @@ function Model() {
 		}
 		$("#keep_winsp").text(hulp);
 		/* switch (+self.keep_goat()) {
-		     case 0:
-		         hulp = geit0[taal];
-		         break;
-		     case 1:
-		         hulp = geit1[taal];
-		         break;
-		     default:
-		         hulp = self.keep_goat() + ' ' + geiten[taal];
+			 case 0:
+				 hulp = geit0[taal];
+				 break;
+			 case 1:
+				 hulp = geit1[taal];
+				 break;
+			 default:
+				 hulp = self.keep_goat() + ' ' + geiten[taal];
 		 }*/
 		$("#keep_goat_text").text(self.keep_goat());
 		if (self.keepChoice() > 0) {
@@ -510,14 +472,14 @@ function Model() {
 	this.changeChoice.subscribe(function () {
 		var hulp;
 		/*switch (+self.change_wins()) {
-		    case 0:
-		        hulp = auto0[taal];
-		        break;
-		    case 1:
-		        hulp = auto1[taal];
-		        break;
-		    default:
-		        hulp = self.change_wins() + ' ' + autos[taal];
+			case 0:
+				hulp = auto0[taal];
+				break;
+			case 1:
+				hulp = auto1[taal];
+				break;
+			default:
+				hulp = self.change_wins() + ' ' + autos[taal];
 		}*/
 		$("#change_wins_text").text(self.change_wins());
 		if (self.changeChoice() > 0) {
@@ -527,14 +489,14 @@ function Model() {
 		}
 		$("#change_winsp").text(hulp);
 		/*switch (+self.change_goat()) {
-		    case 0:
-		        hulp = geit0[taal];
-		        break;
-		    case 1:
-		        hulp = geit1[taal];
-		        break;
-		    default:
-		        hulp = self.change_goat() + ' ' + geiten[taal];
+			case 0:
+				hulp = geit0[taal];
+				break;
+			case 1:
+				hulp = geit1[taal];
+				break;
+			default:
+				hulp = self.change_goat() + ' ' + geiten[taal];
 		}*/
 		$("#change_goat_text").text(self.change_goat());
 		if (self.changeChoice() > 0) {
@@ -556,7 +518,7 @@ function Model() {
 			case 0:
 				$("#foto" + nummer).text(deur[taal] + ' ' + (nummer + 1));
 				break;
-				//  case 1:if $()
+			//  case 1:if $()
 
 
 		}
@@ -694,7 +656,7 @@ function Model() {
 							console.log('naamurl  ', naamurl);
 							$.getJSON(naamurl, function (data) {
 								console.log(data);
-                                if (!data.verwerkt){}//enventjes rode punt laten zien
+								if (!data.verwerkt) { }//enventjes rode punt laten zien
 							});
 
 						}
@@ -760,7 +722,7 @@ function Model() {
 		self.zetmelding();
 
 	}
-    this.password=ko.observable('')
+	this.password = ko.observable('')
 	this.tempoMaken = function (tempo) {
 		if (this.actief()) {
 			if (tempo == this.tempo()) {

@@ -1,6 +1,6 @@
 // Backend URL - update this for deployment
-var heroku = "http://localhost:3002/"; // Voor lokale development
-// var heroku = "https://law-large-backend.onrender.com/"; // Voor Render deployment
+// var heroku = "http://localhost:3002/"; // Voor lokale development
+var heroku = "https://law-large-backend.onrender.com/"; // Voor Render deployment
 
 //var heroku = "https://law-large-2025.herokuapp.com/";
 //var heroku="http://localhost:3000/";//"https://three-door.herokuapp.com/";

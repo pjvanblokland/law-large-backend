@@ -129,11 +129,7 @@ var geef_code = ["Enter code", "Code eingeben", "Kodu girin", "Geef code", "Wpis
 var taal = 0;
 
 function zettaal(taal) {
-    var expireDate = new Date();
-    expireDate.setTime(expireDate.getTime() + (60 * 24 * 60 * 60 * 1000));
-    hulp = "language=" + taal + ";expires=" + expireDate.toUTCString() + ";path=/";
-    document.cookie = hulp;
-    model.maakurl();
+   
 
     $("#aantal_over").text(aantal_over[taal]);
     $(".alg_aantal").text(alg_aantal[taal]);
@@ -212,21 +208,6 @@ function zettaal(taal) {
     initGraph();
 }
 
-
-function leescookie(naam) {
-    var nameEquals = naam.trim() + '=';
-    var i, crumb;
-    var crumbs = document.cookie.split(';');
-    for (i in crumbs) {
-        crumb = crumbs[i].trim();
-        console.log('taal  law large ', crumb);
-        if (crumb.indexOf(nameEquals) == 0) {
-            return crumb.substring(nameEquals.length);
-        }
-    }
-    return 0;
-
-}
 
 
 

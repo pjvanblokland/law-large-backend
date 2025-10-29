@@ -1,19 +1,45 @@
-function Taal(id, naam) {
-	"use strict";
-	this.naam = naam;
-	this.id = id;
-}
 
 function Keuze(Id, Name) {
 	"use strict";
 	this.Name = ko.observable(Name);
 	this.Id = Id;
 }
-
+const TALEN = [
+    { id: 0, naam: "English", code: "eng" },
+    { id: 1, naam: "Deutsch", code: "eng" },
+    { id: 2, naam: "Türkçe", code: "eng" },
+    { id: 3, naam: "Nederlands", code: "ned" },
+    { id: 4, naam: "Polski", code: "eng" },
+    { id: 5, naam: "Español", code: "eng" },
+    { id: 6, naam: "Svenska", code: "eng" },
+    { id: 7, naam: "Français", code: "eng" },
+    { id: 8, naam: "Пусский", code: "eng" },
+    { id: 9, naam: "Italiano", code: "eng" },
+    { id: 10, naam: "中文", code: "eng" },
+    { id: 11, naam: "日本語", code: "eng" },
+    { id: 12, naam: "Português", code: "eng" }
+];
 function Model() {
-	"use strict";
-	var self = this,
-		i;
+
+	var self = this;
+	this.url = ko.observable("help");
+	this.selectedTaal = ko.observable(-1);
+   this.M_TALEN = TALEN;
+    this.selectedTaal.subscribe(function () {
+        taal = self.selectedTaal();
+        if (taal >= 0) {
+            localStorage.setItem('language', taal);
+            self.url("../help/" + self.M_TALEN[taal].code + "/index.html?bootstrap1.htm");
+            zettaal(taal);
+            self.toonMenu(false);
+            if (!self.firstPage()) {
+                initGraph();
+                initGraph1();
+                InitGraph2();
+            }
+        }
+
+    });
 
 	this.toonMenu = ko.observable(false);
 
@@ -56,26 +82,13 @@ function Model() {
 
 
 
-	this.talen = ko.observableArray([
-        new Taal("0", "English"),
-        new Taal("1", "Deutsch"),
-        new Taal("2", "Türkçe"),
-        new Taal("3", "Nederlands"),
-        new Taal("4", "Polski"),
-        new Taal("5", "Español"),
-        new Taal("6", "Svenska"),
-        new Taal("7", "Français"),
-        new Taal("8", "Пусский"),
-        new Taal("9", "Italiano"),
-       new Taal("10", "中文"),
-        new Taal("11", "日本語"),
-         new Taal("12", "Português")
-    ]);
+	
 	this.selectedtaal = ko.observable(taal);
 	this.selectedtaal.subscribe(function () {
 		taal = self.selectedtaal();
 		zettaal(taal);
 		self.zetmelding();
+		   self.url("../help/" + self.M_TALEN[taal].code + "/index.html?law_large.htm");
 		self.keuzes()[0].Name(keep_choice[taal]);
 		self.keuzes()[1].Name(change_choice[taal]);
 	});
@@ -108,59 +121,7 @@ function Model() {
 	this.alleen_change.subscribe(function () {
 		initGraph3();
 	})
-	this.url = ko.observable('help');
-	    this.maakurl = function () {
-        var hulp, hulp1;
-        hulp1 = +this.selectedtaal();
-        switch (hulp1) {
-            case 0:
-                hulp = 'eng';
-                break;
-            case 1:
-                hulp = 'du';
-                break;
-            case 2:
-                hulp = 'tr';
-                break;
-            case 3:
-                hulp = 'ned';
-                break;
-            case 4:
-                hulp = 'pln';
-                break;
-            case 5:
-                hulp = 'sp';
-                break;
-            case 6:
-                hulp = 'swe';
-                break;
-            case 7:
-                hulp = 'fr';
-                break;
-            case 8:
-                hulp = 'rus';
-                break;
-            case 9:
-                hulp = 'it';
-                break;
-            case 10:
-                hulp = 'chi';
-                break;
-            case 11:
-                hulp = 'jap';
-                break;
-            case 12:
-                hulp = "por";
-                break;
-        }
-      
-        if ((hulp == "tr") || (hulp == "pln") || (hulp == "sp") || (hulp == "swe") || (hulp == "fr") || (hulp == "rus") || (hulp == "it") || (hulp == "chi") || (hulp == "jap") || (hulp == "por")) {
-            hulp = "eng"
-        };
-		hulp = "../help/" + hulp + "/index.html?law_large.htm";
-		self.url(hulp);
 
-	};
 	this.size_group = ko.observable(5);
 	this.size_group.subscribe(function () {
 

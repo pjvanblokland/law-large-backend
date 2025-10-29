@@ -1,8 +1,6 @@
-var heroku="https://law-large-2025-98c26f98a985.herokuapp.com/"
+var heroku="https://law-large-backend.onrender.com";
 
-//var heroku = "https://law-large-2025.herokuapp.com/";
-
-//var heroku="http://localhost:3000/";//"https://three-door.herokuapp.com/";
+var taal;
 var ontoptekst = "";
 var random1;
 var model = null;

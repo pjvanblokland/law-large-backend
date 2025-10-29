@@ -130,7 +130,7 @@
         <div style="position:absolute; top:0;right:0; float:right;z-index:100" data-bind="visible:(!model.toonMenu()&&(model.nopage()==1)">
             <button type="button" id="menubutton" style="width:40px;margin-right:5px;margin-top:5px;vertical-align:center;font-weight:bolder;" data-bind="click:zetmenu"> &#9776;
             </button>
-            <input type="image" id="ontopbutton" src="../files/images/ontop.bmp" data-bind="visible:model.ontop,click:zetontop">
+            <input type="image" id="ontopbutton" src="../files1/images/ontop.bmp" data-bind="visible:model.ontop,click:zetontop">
         </div>
 
         <div style="position:absolute; top:0;left:0;right:0;height:100px;background:#f2f2f2;">
@@ -806,7 +806,7 @@
         });
 
         function geefhelp() {
-            model.maakurl();
+          
             window.open(model.url(), "_blank");
         }
         $('#menu li').on("click", function() {

@@ -16,8 +16,8 @@
     <title>Law of large numbers</title>
     <!-- Updated libraries for better compatibility -->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/ui-lightness/jquery-ui.css" type="text/css" />
-    <link rel="stylesheet" href="styles.css" type="text/css" />
-    <script src="vars.js"></script>
+    <link rel="stylesheet" href="public/styles.css" type="text/css" />
+    <script src="public/vars.js"></script>
     <!-- Updated jQuery to 3.2.1 for better compatibility -->
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <!-- Updated Knockout.js to more reliable CDN -->
@@ -25,7 +25,7 @@
     <!-- Updated jQuery UI to 1.13.3 -->
     <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script>
     <!-- Local files for additional functionality (only include existing files) -->
-    <script src="files/assen.js"></script>
+    <script src="public/files/assen.js"></script>
     <!-- Commented out missing files for now -->
     <!--<script src="files/jquery.event.drag-2.2.js"></script>-->
     <!--<script src="files/jquery.ui.touch-punch.min.js"></script>-->
@@ -33,19 +33,20 @@
     <!--<script src="files/logo.js"></script>-->
     
     <!-- Temporary placeholder for missing functions -->
-    <script>
+  <script>
         // Placeholder function for missing zetgrafiekenlogo
         function zetgrafiekenlogo() {
             console.log('zetgrafiekenlogo placeholder called');
             // Add actual logo functionality here when logo.js is available
         }
     </script>
-    <script charset="UTF-8" src="model.js"></script>
-    <script charset="UTF-8" src="vertaal.js"></script>
-    <script src="grafiek.js"></script>
-    <script src="begin.js"></script>
-    <script src="dialog.js"></script>
-    <link rel="shortcut icon" type="image/png" href="../files/favicoVU.png">
+
+    <script charset="UTF-8" src="public/model.js"></script>
+    <script charset="UTF-8" src="public/vertaal.js"></script>
+    <script src="public/grafiek.js"></script>
+    <script src="public/begin.js"></script>
+    <script src="public/dialog.js"></script>
+    <link rel="shortcut icon" type="image/png" href="public/files/favicoVU.png">
  
 </head>
 
@@ -60,9 +61,9 @@
 
             <li><span class="kies_taal"></span>
                 <br>
-                <select style="width:100px" ; id="talen" data-bind="   
+                <select style="width:100px" ; data-bind="   
 							value: model.selectedtaal,
-							options:        model.talen,
+							options:        model.M_TALEN,
 							optionsText:    'naam', 
 							optionsValue:   'id'       
 						"></select>
@@ -118,9 +119,9 @@
                 <div style="width:200px;text-align:left;  ">
                     <br>
                     <p><span class="kies_taal"></span>
-                        <select style="width:100px" ;class="talen" data-bind="   
+                        <select style="width:100px" ; data-bind="   
 							value: model.selectedtaal,
-							options:        model.talen,
+							options:        model.M_TALEN,
 							optionsText:    'naam', 
 							optionsValue:   'id'       
 						"></select>
@@ -142,7 +143,7 @@
         <div style="position:absolute; top:0;right:0; float:right;z-index:100" data-bind="visible:(!model.toonMenu()&&(model.nopage()==1))">
             <button type="button" id="menubutton" style="width:40px;margin-right:5px;margin-top:5px;vertical-align:center;font-weight:bolder;" data-bind="click:zetmenu"> &#9776;
             </button>
-            <input type="image" id="ontopbutton" src="images/ontop.bmp" data-bind="visible:model.ontop,click:zetontop">
+            <input type="image" id="ontopbutton" src="public/images/ontop.bmp" data-bind="visible:model.ontop,click:zetontop">
         </div>
 
         <div style="position:absolute; top:0;left:0;right:0;height:100px;background:#f2f2f2;">
@@ -641,7 +642,9 @@
             });
             var url = document.URL;
             var hash;
-            taal = leescookie("language");
+           var language = parseInt(localStorage.getItem('language'),10)||0 ;
+
+             
             var q = url.split('?')[1];
             if (q != undefined) {
                 $("#dialog-ontop").dialog({
@@ -678,7 +681,7 @@
                     }
                     if (hash[0] == "language") {
 
-                        taal = +parseInt(hash[1], 10);
+                        language = +parseInt(hash[1], 10);
                     }
                     if (hash[0] == "code")
                         numcode = parseInt(hash[1], 10);
@@ -709,7 +712,7 @@
 
             model = new Model();
             ko.applyBindings(model);
-            model.selectedtaal(taal);
+            model.selectedtaal(language);
             if (numcode) {
                 model.numeric_code(numcode);
             }
@@ -818,11 +821,11 @@
         });
 
         function geefhelp() {
-            model.maakurl();
+           
             window.open(model.url(), "_blank");
         }
         $('#menu li').on("click", function() {
-            var hulp, tonen, laatste, i, taal, taal1;
+            var hulp, tonen, laatste ;
             hulp = $(this).attr("id");
 
             switch (parseInt(hulp, 10)) {
@@ -946,7 +949,7 @@
 
 
         function startheroku() {
-            url = heroku + "?dataset=" + model.numcode() + "&language = " + taal;
+            url = "grafiek.html?dataset=" + model.numcode();
             window.open(url, "_blank");
         }
 
