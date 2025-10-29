@@ -136,10 +136,10 @@ function cleanupDemoDataset() {
     var demoDataset = DATASET_LIST[123446];
     if (demoDataset) {
         var inactiveTime = Date.now() - demoDataset.lastActivity;
-        var fifteenMinutes = 15 * 60 * 1000; // 15 minutes in milliseconds
+        var oneHour = 60 * 60 * 1000; // 1 hour in milliseconds
         
-        if (inactiveTime > fifteenMinutes) {
-            console.log('Cleaning up demo dataset 123446 after 15 minutes of inactivity');
+        if (inactiveTime > oneHour) {
+            console.log('Cleaning up demo dataset 123446 after 1 hour of inactivity');
             demoDataset.aantalkeep = 0;
             demoDataset.aantalchange = 0;
             demoDataset.keep = [];
@@ -149,10 +149,10 @@ function cleanupDemoDataset() {
     }
 }
 
-// Check for cleanup every 5 minutes
-setInterval(cleanupDemoDataset, 5 * 60 * 1000);
+// Check for cleanup every 15 minutes
+setInterval(cleanupDemoDataset, 15 * 60 * 1000);
 
-console.log('Auto-cleanup for dataset 123446 enabled (15 min inactivity)');
+console.log('Auto-cleanup for dataset 123446 enabled (1 hour inactivity)');
 app.get('/exist', (req, res) => {
     var dataset = DATASET_LIST[+req.query.number];
     //console.log(dataset);
