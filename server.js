@@ -24,6 +24,7 @@ var Dataset = function (id, name) {
     self.keep = [];
     self.change = [];
     self.aangesloten = []; // Keep for compatibility but not used in REST API
+    self.lastActivity = Date.now(); // Track last activity for auto-cleanup
     DATASET_LIST[id] = self;
 
 
@@ -46,6 +47,10 @@ var Dataset = function (id, name) {
 
 
         }
+        
+        // Update last activity timestamp for auto-cleanup
+        self.lastActivity = Date.now();
+        
         console.log(self.keep.length, self.keep);
         console.log(self.change.length, self.change);
 
@@ -125,6 +130,29 @@ function create_datasets() {
 
 }
 create_datasets();
+
+// Auto-cleanup function for dataset 123446
+function cleanupDemoDataset() {
+    var demoDataset = DATASET_LIST[123446];
+    if (demoDataset) {
+        var inactiveTime = Date.now() - demoDataset.lastActivity;
+        var fifteenMinutes = 15 * 60 * 1000; // 15 minutes in milliseconds
+        
+        if (inactiveTime > fifteenMinutes) {
+            console.log('Cleaning up demo dataset 123446 after 15 minutes of inactivity');
+            demoDataset.aantalkeep = 0;
+            demoDataset.aantalchange = 0;
+            demoDataset.keep = [];
+            demoDataset.change = [];
+            demoDataset.lastActivity = Date.now(); // Reset timestamp
+        }
+    }
+}
+
+// Check for cleanup every 5 minutes
+setInterval(cleanupDemoDataset, 5 * 60 * 1000);
+
+console.log('Auto-cleanup for dataset 123446 enabled (15 min inactivity)');
 app.get('/exist', (req, res) => {
     var dataset = DATASET_LIST[+req.query.number];
     //console.log(dataset);
