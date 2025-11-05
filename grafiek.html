@@ -3,7 +3,8 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
-    <!-- Socket.IO not needed for REST API version -->
+    <!-- Socket.IO for real-time communication -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
 
@@ -102,8 +103,9 @@
     var kleurkeep = "blue"; //"#99D9E9";
     var kleurchange = "lime";
     var taal = 0;
-    var heroku = "https://law-large-backend.onrender.com/"; // Backend URL
+    var heroku = "https://law-large-backend.onrender.com"; // Backend URL (no trailing slash for socket.io)
     var currentDataset = "123446";
+    var socket = null;
 
 
     var keep = [];
@@ -129,40 +131,59 @@
             }
         }
         currentDataset = numcode;
-      var taal = parseInt(localStorage.getItem('language'),10)||0 ;
+        var taal = parseInt(localStorage.getItem('language'),10)||0 ;
 
         
         zettaal(taal);
         if (numcode != "123446"){$("#numcode").text('('+numcode+')');}
         
-        // Start polling for data
-        loadDataset();
-        setInterval(loadDataset, 1000); // Poll every second
+        // Initialize Socket.IO connection
+        initSocketConnection();
     }
     
-    function loadDataset() {
-        var url = heroku + 'info?number=' + currentDataset;
-        console.log('Loading dataset from:', url);
-        console.log('Current dataset:', currentDataset);
-        $.get(url, function(data) {
-            console.log('API Response received:', data);
-            if (data && data.dataset) {
-                keep = data.dataset.keep || [];
-                change = data.dataset.change || [];
-                console.log('Dataset loaded - keep:', keep.length, 'change:', change.length);
-                console.log('keep data:', keep);
-                console.log('change data:', change);
-                initGraph3();
+    function initSocketConnection() {
+        console.log('Connecting to Socket.IO server:', heroku);
+        socket = io(heroku);
+        
+        socket.on('connect', function() {
+            console.log('Connected to Socket.IO server');
+            console.log('Joining dataset:', currentDataset);
+            socket.emit('dataset', { dataset: currentDataset });
+        });
+        
+        socket.on('disconnect', function() {
+            console.log('Disconnected from Socket.IO server');
+        });
+        
+        socket.on('verstuur_data', function(data) {
+            console.log('Received initial data:', data);
+            keep = data.keep || [];
+            change = data.change || [];
+            console.log('Initial data - keep:', keep.length, 'change:', change.length);
+            initGraph3();
+        });
+        
+        socket.on('gegooid', function(data) {
+            console.log('Received new throw:', data);
+            if (data.keep == 1) {
+                keep.push(data.count);
+                console.log('Added to keep, new length:', keep.length);
             } else {
-                console.log('No dataset in response. Full response:', data);
-                console.log('Response type:', typeof data);
+                change.push(data.count);
+                console.log('Added to change, new length:', change.length);
             }
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-            console.log('API call failed!');
-            console.log('Status:', jqXHR.status);
-            console.log('Status text:', textStatus);
-            console.log('Error:', errorThrown);
-            console.log('Response text:', jqXHR.responseText);
+            initGraph3();
+        });
+        
+        socket.on('clear', function(data) {
+            console.log('Dataset cleared');
+            keep = [];
+            change = [];
+            initGraph3();
+        });
+        
+        socket.on('connect_error', function(error) {
+            console.log('Socket.IO connection error:', error);
         });
     }
 

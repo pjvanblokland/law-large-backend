@@ -1,13 +1,75 @@
 var express = require('express');
 var cors = require('cors');
+var http = require('http');
+var socketIo = require('socket.io');
+
 var app = express();
+var server = http.createServer(app);
+var io = socketIo(server, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"]
+    }
+});
+
 app.use(cors());
 
 // No static file serving needed - this is a pure API service
 
-// Change port and remove Socket.IO server
-app.listen(process.env.PORT || 3002, () => {
-    console.log("Law Large Backend server started on port", process.env.PORT || 3002);
+// Socket.IO server with real-time communication
+server.listen(process.env.PORT || 3002, () => {
+    console.log("Law Large Backend server with Socket.IO started on port", process.env.PORT || 3002);
+});
+
+// Socket.IO connection handling
+var SOCKET_LIST = {};
+
+io.on('connection', function(socket) {
+    console.log('New socket connection:', socket.id);
+    SOCKET_LIST[socket.id] = socket;
+    
+    socket.on('disconnect', function() {
+        console.log('Socket disconnected:', socket.id);
+        delete SOCKET_LIST[socket.id];
+        
+        // Remove socket from all datasets
+        for (var datasetId in DATASET_LIST) {
+            var dataset = DATASET_LIST[datasetId];
+            var index = dataset.aangesloten.indexOf(socket.id);
+            if (index > -1) {
+                dataset.aangesloten.splice(index, 1);
+            }
+        }
+    });
+    
+    socket.on('dataset', function(data) {
+        var datasetId = +data.dataset;
+        console.log('Socket', socket.id, 'joining dataset', datasetId);
+        
+        if (DATASET_LIST[datasetId]) {
+            var dataset = DATASET_LIST[datasetId];
+            
+            // Remove from other datasets first
+            for (var id in DATASET_LIST) {
+                var ds = DATASET_LIST[id];
+                var index = ds.aangesloten.indexOf(socket.id);
+                if (index > -1) {
+                    ds.aangesloten.splice(index, 1);
+                }
+            }
+            
+            // Add to requested dataset
+            if (dataset.aangesloten.indexOf(socket.id) === -1) {
+                dataset.aangesloten.push(socket.id);
+            }
+            
+            // Send current data to the newly connected socket
+            socket.emit('verstuur_data', {
+                keep: dataset.keep,
+                change: dataset.change
+            });
+        }
+    });
 });
 
 
@@ -57,10 +119,14 @@ var Dataset = function (id, name) {
         console.log("gegooid ")
 
         console.log('aangesloten ', self.aangesloten, self.aangesloten.length)
+        // Send update to all connected sockets for this dataset
         for (i = 0; i < self.aangesloten.length; i += 1) {
-            socket = SOCKET_LIST[self.aangesloten[i]];
-            console.log('verzend  ', verzend)
-            socket.emit("gegooid", verzend);
+            var socketId = self.aangesloten[i];
+            socket = SOCKET_LIST[socketId];
+            if (socket) {
+                console.log('verzend naar socket ', socketId, verzend)
+                socket.emit("gegooid", verzend);
+            }
         }
 
     }
@@ -72,12 +138,16 @@ var Dataset = function (id, name) {
         self.keep = [];
         self.change = [];
         console.log('voor  ', self.aangesloten.length);
+        // Send clear signal to all connected sockets for this dataset
         for (i = 0; i < self.aangesloten.length; i += 1) { //alle kijkers
-            socket = SOCKET_LIST[self.aangesloten[i]];
-            console.log('schhoon');
-            socket.emit("clear", {
-                "clear": 0
-            })
+            var socketId = self.aangesloten[i];
+            socket = SOCKET_LIST[socketId];
+            if (socket) {
+                console.log('schhoon');
+                socket.emit("clear", {
+                    "clear": 0
+                });
+            }
         }
         console.log('na  ', self.aangesloten.length);
 
@@ -239,7 +309,7 @@ app.get('/info', (req, res) => {
     } else {
         // General info about all datasets
         var info = {};
-        info.verbonden = 0; // No sockets in REST API
+        info.verbonden = Object.keys(SOCKET_LIST).length; // Count active sockets
         info.aantaltafels = Object.keys(DATASET_LIST).length;
         info.tafels = [];
         for (var datasetId in DATASET_LIST) {
@@ -247,7 +317,8 @@ app.get('/info', (req, res) => {
             info.tafels.push({
                 "number": dataset.id,
                 "keep": dataset.keep.length,
-                "change": dataset.change.length
+                "change": dataset.change.length,
+                "connected": dataset.aangesloten.length
             });
         }
         res.json(info);
