@@ -162,6 +162,8 @@
             keep = data.keep || [];
             change = data.change || [];
             console.log('Initial data - keep:', keep.length, 'change:', change.length);
+            console.log('Keep array:', keep);
+            console.log('Change array:', change);
             initGraph3();
         });
         
@@ -287,7 +289,13 @@
     //	}
 
     function initGraph3() {
+        console.log('initGraph3 called');
+        console.log('model:', model);
+        console.log('keep array length:', keep.length, 'data:', keep);
+        console.log('change array length:', change.length, 'data:', change);
+        
         if (model == null) {
+            console.log('model is null, returning');
             return;
         }
         canvas3 = document.getElementById('paintbox3');
